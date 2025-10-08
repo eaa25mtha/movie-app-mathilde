@@ -171,6 +171,18 @@ footer {
   border-color: var(--secondary);
 }
 
+/* hover effekter */
+.movie-card {
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.movie-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+
 .movie-card:focus {
   outline: 3px solid var(--secondary);
   outline-offset: 2px;

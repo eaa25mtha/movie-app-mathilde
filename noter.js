@@ -1,4 +1,4 @@
-// eksperimenter og øvelser med javascript kode
+// eksperimenter og øvelser med javascript kode, notater 
 
 // Test hvordan du får adgang til movie data
 console.log("=== TESTING MOVIE OBJECTS ===");
@@ -51,7 +51,7 @@ console.log("Barbie movie object:", barbieMovie); //test om objektet virker i js
 
 //html og dom funktion
 // Find movie list container (gør det én gang)
-const movieListContainer = document.querySelector("#movie-list");
+//const movieListContainer = document.querySelector("#movie-list");
 
 //funktion der både genererer HTML og tilføjer til DOM
 function displayMovie(movieObject) {
@@ -117,4 +117,90 @@ async function loadMovies() {
 
 // Start the app
 loadMovies();
+
+
+
+//LØSNING FØR GLOBAL STORAGE OG INTERAKTIV SØGNING I MOVIE APPEN
+"use strict";
+
+// movie list container, DOM reference (kun én gang)
+const movieListContainer = document.querySelector("#movie-list");
+
+// funktion der både genererer HTML og tilføjer data til DOM
+function displayMovie(movieObject) {
+  const genreString = movieObject.genre.join(", "); // Konverter genre array til string
+  const actorsString = movieObject.actors.join(", ");
+
+  const movieHTML = `
+    <article class="movie-card" tabindex="0">
+      <img src="${movieObject.image}" 
+           alt="Poster of ${movieObject.title}" 
+           class="movie-poster" />
+      <div class="movie-info">
+        <h3>${movieObject.title} <span class="movie-year">(${movieObject.year})</span></h3>
+        <p class="movie-genre">${genreString}</p>
+        <p class="movie-rating">⭐ ${movieObject.rating}</p>
+        <p class="movie-director"><strong>Director:</strong> ${movieObject.director}</p>
+      </div>
+    </article>
+  `;
+
+  // Tilføj direkte til DOM
+  movieListContainer.insertAdjacentHTML("beforeend", movieHTML);
+  console.log(`${movieObject.title} tilføjet til DOM!`);
+} 
+
+
+// ekstern JSON data i stedet for locale arrays i javascriptet 
+// DISPLAY ALL MOVIES
+
+function displayMovies(movieArray) {
+  // Ryd container først
+  movieListContainer.innerHTML = "";
+
+  console.log(`Viser ${movieArray.length} movies...`);
+
+  // Loop gennem alle movies
+  for (const movie of movieArray) {
+    displayMovie(movie); // Samme funktion til alt!
+  }
+
+  console.log(`${movieArray.length} movies vist successfully!`);
+}
+
+// MAIN ASYNC FUNCTION 
+
+async function loadMovies() {
+  console.log("Henter alle movies fra JSON...");
+  const response = await fetch("https://raw.githubusercontent.com/cederdorff/race/refs/heads/master/data/movies.json");
+  const moviesFromJSON = await response.json();
+  console.log("JSON data modtaget:", moviesFromJSON.length, "movies");
+
+  // Vis alle movies fra JSON!
+  displayMovies(moviesFromJSON);
+}
+
+// Start processen
+loadMovies();
+
+//eksempel på søgelogik
+// Hvis bruger søger "dark":
+const searchTerm = "dark".toLowerCase(); // "dark"
+const movieTitle = "The Dark Knight".toLowerCase(); // "the dark knight"
+const matches = movieTitle.includes(searchTerm); // true
+console.log(matches);
+
+
+//filtrering
+// Genre eksempel fra JSON data:
+const movie = {
+  title: "Barbie",
+  genre: ["Adventure", "Comedy", "Fantasy"], // Array af strings
+  year: 2023
+};
+
+// Tjek om en movie har en bestemt genre:
+const hasComedy = movie.genre.includes("Comedy"); // true
+console.log(hasComedy);
+
 
